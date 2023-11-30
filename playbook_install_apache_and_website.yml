@@ -1,6 +1,6 @@
 ---
 - name: Install Apache Web Server
-  hosts: all
+  hosts: my_server
   become: yes
 
   tasks:
