@@ -91,7 +91,7 @@
         state: absent
 
     - name: Copying my_web_site.conf to sites-available
-      command: cp /var/www/html/My_web_site-main/my_web_site.conf /etc/apache2/sites-available/
+      shell: cp /var/www/html/My_web_site-main/my_web_site.conf /etc/apache2/sites-available/
 
     - name: Deleting my_web_site.conf
       file:
@@ -99,10 +99,10 @@
         state: absent
 
     - name: Executing a2ensite
-      command: a2ensite my_web_site.conf
+      shell: a2ensite my_web_site.conf
 
     - name: Executing a2dissite
-      command: a2dissite 000-default.conf
+      shell: a2dissite 000-default.conf
 
     - name: Restart Apache Centos
       service:
