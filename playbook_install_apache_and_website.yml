@@ -58,11 +58,11 @@
         dest: /var/www/html/
       notify:
         - Extracting My_web_site-main.zip
-        - Deleting My_web_site-main.zip
         - Deleting .github
         - Deleting README.md
         - Copying my_web_site.conf to sites-available
         - Deleting my_web_site.conf
+        - Deleting My_web_site-main.zip
         - Executing a2ensite
         - Executing a2dissite
         - Restart Apache Centos
@@ -74,11 +74,6 @@
         remote_src: yes
         src: /var/www/html/My_web_site-main.zip
         dest: /var/www/html/
-
-#    - name: Deleting My_web_site-main.zip
- #     file:
- #       path: /var/www/html/My_web_site-main/my_web_site.conf
- #       state: absent
 
     - name: Deleting .github
       file:
@@ -97,6 +92,11 @@
       file:
         path: /var/www/html/My_web_site-main/my_web_site.conf
         state: absent
+
+    - name: Deleting My_web_site-main.zip
+      file:
+        path: /var/www/html/My_web_site-main/my_web_site.conf
+        state: absent    
 
     - name: Executing a2ensite
       shell: a2ensite my_web_site.conf
