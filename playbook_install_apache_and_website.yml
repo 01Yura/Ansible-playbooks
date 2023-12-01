@@ -75,10 +75,10 @@
         src: /var/www/html/My_web_site-main.zip
         dest: /var/www/html/
 
-    - name: Deleting My_web_site-main.zip
-      file:
-        path: /var/www/html/My_web_site-main/my_web_site.conf
-        state: absent
+#    - name: Deleting My_web_site-main.zip
+ #     file:
+ #       path: /var/www/html/My_web_site-main/my_web_site.conf
+ #       state: absent
 
     - name: Deleting .github
       file:
