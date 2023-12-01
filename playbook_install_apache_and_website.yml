@@ -57,9 +57,12 @@
         url: https://github.com/01Yura/My_web_site/archive/refs/heads/main.zip
         dest: /var/www/html/
       notify:
-        - Extracting main.zip
-        - Copying file .conf to sites-available
-        - Deleting file .conf
+        - Extracting My_web_site-main.zip
+        - Deleting My_web_site-main.zip
+        - Deleting .github
+        - Deleting README.md
+        - Copying my_web_site.conf to sites-available
+        - Deleting my_web_site.conf
         - Executing a2ensite
         - Executing a2dissite
         - Restart Apache Centos
@@ -90,7 +93,7 @@
     - name: Copying my_web_site.conf to sites-available
       command: cp /var/www/html/My_web_site-main/my_web_site.conf /etc/apache2/sites-available/
 
-    - name: Deleting file my_web_site.conf
+    - name: Deleting my_web_site.conf
       file:
         path: /var/www/html/My_web_site-main/my_web_site.conf
         state: absent
