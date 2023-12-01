@@ -66,16 +66,31 @@
         - Restart Apache Debian
 
   handlers:
-    - name: Extracting main.zip
+    - name: Extracting My_web_site-main.zip
       unarchive:
         remote_src: yes
         src: /var/www/html/My_web_site-main.zip
         dest: /var/www/html/
 
-    - name: Copying file .conf to sites-available
+    - name: Deleting My_web_site-main.zip
+      file:
+        path: /var/www/html/My_web_site-main/my_web_site.conf
+        state: absent
+
+    - name: Deleting .github
+      file:
+        path: /var/www/html/My_web_site-main/.github
+        state: absent
+
+    - name: Deleting README.md
+      file:
+        path: /var/www/html/My_web_site-main/README.md
+        state: absent
+
+    - name: Copying my_web_site.conf to sites-available
       command: cp /var/www/html/My_web_site-main/my_web_site.conf /etc/apache2/sites-available/
 
-    - name: Deleting file .conf
+    - name: Deleting file my_web_site.conf
       file:
         path: /var/www/html/My_web_site-main/my_web_site.conf
         state: absent
