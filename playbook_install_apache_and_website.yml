@@ -95,7 +95,7 @@
 
     - name: Deleting My_web_site-main.zip
       file:
-        path: /var/www/html/My_web_site-main/my_web_site.conf
+        path: /var/www/html/My_web_site-main/My_web_site-main.zip
         state: absent    
 
     - name: Executing a2ensite
