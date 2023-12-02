@@ -63,7 +63,8 @@
         - Copying my_web_site.conf to sites-available
         - Deleting my_web_site.conf
         - Deleting My_web_site-main.zip
-        - Executing a2ensite
+        - Executing a2ensite 1
+        - Executing a2ensite 2
         - Executing a2dissite
         - Restart Apache Centos
         - Restart Apache Debian
@@ -98,8 +99,11 @@
         path: /var/www/html/My_web_site-main.zip
         state: absent    
 
-    - name: Executing a2ensite
+    - name: Executing a2ensite 1
       shell: a2ensite my_web_site.conf
+
+    - name: Executing a2ensite 2
+      shell: a2ensite my_web_site-ssl.conf  
 
     - name: Executing a2dissite
       shell: a2dissite 000-default.conf
