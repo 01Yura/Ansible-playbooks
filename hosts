@@ -1,5 +1,5 @@
 [server]
  #my_server ansible_host=3.137.145.197 ansible_user=root
- my_server ansible_host=194.87.199.75 ansible_user=root
+ my_server ansible_host=194.87.199.75
  #target3 ansible_host=192.168.0.247 ansible_user=root ansible_password=toor
  #my_server ansible_host=18.219.44.49 ansible_user=root
