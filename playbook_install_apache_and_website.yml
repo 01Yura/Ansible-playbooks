@@ -105,7 +105,7 @@
         state: directory
 
     - name: Deleting all in yura
-      shell: rm -f /var/www/html/yura/*
+      shell: rm /var/www/html/yura/*
 
     - name: Copying files
       ansible.builtin.copy:
