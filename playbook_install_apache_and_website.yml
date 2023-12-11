@@ -64,6 +64,9 @@
         - Copying my_web_site-ssl.conf to sites-available
         - Deleting my_web_site.conf
         - Deleting My_web_site-main.zip
+        - Creating directory yura
+        - Copying files
+        - Deleting files
         - Executing a2ensite 1
         - Executing a2ensite 2
         - Restart Apache Centos
@@ -101,6 +104,16 @@
       file:
         path: /var/www/html/My_web_site-main.zip
         state: absent
+
+    - name: Creating directory yura
+        path: /etc/www/html/yura
+        state: directory
+
+    - name: Copying files
+      shell: cp -r /var/www/html/My_web_site-main/* /etc/www/html/yura
+
+    - name: Deleting files
+      shell: rm -rf /var/www/html/My_web_site-main
 
     - name: Executing a2ensite 1
       shell: a2ensite my_web_site.conf
