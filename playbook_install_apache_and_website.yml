@@ -90,10 +90,10 @@
         state: absent
 
     - name: Copying yura.conf to sites-available
-      shell: cp /var/www/html/My_web_site-main/yura.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/My_web_site-main/yura.conf /etc/apache2/sites-available/
 
     - name: Copying yura_ssl.conf to sites-available
-      shell: cp /var/www/html/My_web_site-main/yura_ssl.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/My_web_site-main/yura_ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting my_web_site.conf
       file:
