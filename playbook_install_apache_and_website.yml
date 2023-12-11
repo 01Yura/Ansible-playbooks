@@ -107,8 +107,13 @@
     - name: Deleting all in yura
       shell: rm -f /var/www/html/yura/*
 
-    - name: Copying files
-      shell: cp -r /var/www/html/My_web_site-main/* /etc/www/html/yura
+    - name: Copying configs
+      ansible.builtin.copy:
+        src: /var/www/html/My_web_site-main/{{ item }}
+        dest: /var/www/html/yura
+      loop:
+        - yura.conf
+        - yura_ssl.conf
 
     - name: Executing a2ensite 1
       shell: a2ensite yura.conf
