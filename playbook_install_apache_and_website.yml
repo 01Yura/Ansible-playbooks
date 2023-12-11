@@ -121,10 +121,10 @@
       shell: rm -rf /var/www/html/My_web_site-main
 
     - name: Executing a2ensite 1
-      shell: a2ensite my_web_site.conf
+      shell: a2ensite yura.conf
 
     - name: Executing a2ensite 2
-      shell: a2ensite my_web_site-ssl.conf
+      shell: a2ensite yura-ssl.conf
 
     - name: Restart Apache Centos
       service:
