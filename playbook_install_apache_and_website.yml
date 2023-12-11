@@ -124,7 +124,7 @@
       shell: a2ensite yura.conf
 
     - name: Executing a2ensite 2
-      shell: a2ensite yura-ssl.conf
+      shell: a2ensite yura_ssl.conf
 
     - name: Restart Apache Centos
       service:
