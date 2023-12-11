@@ -65,6 +65,7 @@
         - Deleting my_web_site.conf
         - Deleting My_web_site-main.zip
         - Creating directory yura
+        - Deleting all in yura
         - Copying files
         - Deleting files
         - Executing a2ensite 1
@@ -109,6 +110,9 @@
       file:
         path: /etc/www/html/yura
         state: directory
+
+    - name: Deleting all in yura
+      shell: rm -f /var/www/html/yura/*
 
     - name: Copying files
       shell: cp -r /var/www/html/My_web_site-main/* /etc/www/html/yura
