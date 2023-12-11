@@ -67,7 +67,6 @@
         - Creating directory yura
         - Deleting all in yura
         - Copying files
-        - Deleting files
         - Executing a2ensite 1
         - Executing a2ensite 2
         - Restart Apache Centos
@@ -116,9 +115,6 @@
 
     - name: Copying files
       shell: cp -r /var/www/html/My_web_site-main/* /etc/www/html/yura
-
-    - name: Deleting files
-      shell: rm -rf /var/www/html/My_web_site-main
 
     - name: Executing a2ensite 1
       shell: a2ensite yura.conf
