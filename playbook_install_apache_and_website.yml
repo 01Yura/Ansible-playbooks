@@ -108,12 +108,7 @@
       shell: rm /var/www/html/yura/*
 
     - name: Copying files
-      ansible.builtin.copy:
-        src: /var/www/html/My_web_site-main/{{ item }}
-        dest: /var/www/html/yura
-      loop:
-        - index.html
-        - ip.php
+      shell: cp /var/www/html/My_web_site-main/* /var/www/html/yura/
 
     - name: Executing a2ensite 1
       shell: a2ensite yura.conf
