@@ -62,7 +62,6 @@
         - Deleting README.md
         - Copying yura.conf to sites-available
         - Copying yura_ssl.conf to sites-available
-        - Deleting my_web_site.conf
         - Deleting My_web_site-main.zip
         - Creating directory yura
         - Deleting all in yura
