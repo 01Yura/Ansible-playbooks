@@ -68,6 +68,7 @@
         - Copying files
         - Executing a2ensite 1
         - Executing a2ensite 2
+        - Deleting My_web_site-main
         - Restart Apache Centos
         - Restart Apache Debian
 
@@ -115,6 +116,11 @@
 
     - name: Executing a2ensite 2
       shell: a2ensite yura_ssl.conf
+
+    - name: Deleting My_web_site-main
+      file:
+        path: /var/www/html/My_web_site-main
+        state: absent
 
     - name: Restart Apache Centos
       service:
