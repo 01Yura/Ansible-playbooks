@@ -94,11 +94,6 @@
     - name: Moving yura_ssl.conf to sites-available
       shell: mv /var/www/html/My_web_site-main/yura_ssl.conf /etc/apache2/sites-available/
 
-    - name: Deleting my_web_site.conf
-      file:
-        path: /var/www/html/My_web_site-main/my_web_site.conf
-        state: absent
-
     - name: Deleting My_web_site-main.zip
       file:
         path: /var/www/html/My_web_site-main.zip
