@@ -60,8 +60,8 @@
         - Extracting My_web_site-main.zip
         - Deleting .github
         - Deleting README.md
-        - Copying yura.conf to sites-available
-        - Copying yura_ssl.conf to sites-available
+        - Moving yura.conf to sites-available
+        - Moving yura_ssl.conf to sites-available
         - Deleting My_web_site-main.zip
         - Creating directory yura
         - Deleting all in yura
@@ -88,10 +88,10 @@
         path: /var/www/html/My_web_site-main/README.md
         state: absent
 
-    - name: Copying yura.conf to sites-available
+    - name: Moving yura.conf to sites-available
       shell: mv /var/www/html/My_web_site-main/yura.conf /etc/apache2/sites-available/
 
-    - name: Copying yura_ssl.conf to sites-available
+    - name: Moving yura_ssl.conf to sites-available
       shell: mv /var/www/html/My_web_site-main/yura_ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting my_web_site.conf
