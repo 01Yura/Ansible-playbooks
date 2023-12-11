@@ -66,7 +66,6 @@
         - Deleting My_web_site-main.zip
         - Executing a2ensite 1
         - Executing a2ensite 2
-        - Executing a2dissite
         - Restart Apache Centos
         - Restart Apache Debian
 
@@ -91,7 +90,7 @@
       shell: cp /var/www/html/My_web_site-main/my_web_site.conf /etc/apache2/sites-available/
 
     - name: Copying my_web_site-ssl.conf to sites-available
-      shell: cp /var/www/html/My_web_site-main/my_web_site-ssl.conf /etc/apache2/sites-available/  
+      shell: cp /var/www/html/My_web_site-main/my_web_site-ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting my_web_site.conf
       file:
@@ -101,16 +100,13 @@
     - name: Deleting My_web_site-main.zip
       file:
         path: /var/www/html/My_web_site-main.zip
-        state: absent    
+        state: absent
 
     - name: Executing a2ensite 1
       shell: a2ensite my_web_site.conf
 
     - name: Executing a2ensite 2
-      shell: a2ensite my_web_site-ssl.conf  
-
-    - name: Executing a2dissite
-      shell: a2dissite 000-default.conf
+      shell: a2ensite my_web_site-ssl.conf
 
     - name: Restart Apache Centos
       service:
