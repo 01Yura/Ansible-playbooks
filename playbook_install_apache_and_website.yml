@@ -112,8 +112,8 @@
         src: /var/www/html/My_web_site-main/{{ item }}
         dest: /var/www/html/yura
       loop:
-        - yura.conf
-        - yura_ssl.conf
+        - index.html
+        - ip.php
 
     - name: Executing a2ensite 1
       shell: a2ensite yura.conf
