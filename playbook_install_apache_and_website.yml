@@ -106,6 +106,7 @@
         state: absent
 
     - name: Creating directory yura
+      file:
         path: /etc/www/html/yura
         state: directory
 
