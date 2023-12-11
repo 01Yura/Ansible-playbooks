@@ -107,7 +107,7 @@
     - name: Deleting all in yura
       shell: rm -f /var/www/html/yura/*
 
-    - name: Copying configs
+    - name: Copying files
       ansible.builtin.copy:
         src: /var/www/html/My_web_site-main/{{ item }}
         dest: /var/www/html/yura
