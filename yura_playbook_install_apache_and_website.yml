@@ -60,11 +60,11 @@
         - Extracting My_web_site-main.zip
         - Deleting .github
         - Deleting README.md
-        - Moving yura.conf to sites-available
-        - Moving yura_ssl.conf to sites-available
+        - Moving {{ folder }}.conf to sites-available
+        - Moving {{ folder }}_ssl.conf to sites-available
         - Deleting My_web_site-main.zip
-        - Creating directory yura
-        - Deleting all in yura
+        - Creating directory {{ folder }}
+        - Deleting all in {{ folder }}
         - Copying files
         - Executing a2ensite 1
         - Executing a2ensite 2
@@ -89,33 +89,33 @@
         path: /var/www/html/My_web_site-main/README.md
         state: absent
 
-    - name: Moving yura.conf to sites-available
-      shell: mv /var/www/html/My_web_site-main/yura.conf /etc/apache2/sites-available/
+    - name: Moving {{ folder }}.conf to sites-available
+      shell: mv /var/www/html/My_web_site-main/{{ folder }}.conf /etc/apache2/sites-available/
 
-    - name: Moving yura_ssl.conf to sites-available
-      shell: mv /var/www/html/My_web_site-main/yura_ssl.conf /etc/apache2/sites-available/
+    - name: Moving {{ folder }}_ssl.conf to sites-available
+      shell: mv /var/www/html/My_web_site-main/{{ folder }}_ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting My_web_site-main.zip
       file:
         path: /var/www/html/My_web_site-main.zip
         state: absent
 
-    - name: Creating directory yura
+    - name: Creating directory {{ folder }}
       file:
-        path: /etc/www/html/yura
+        path: /etc/www/html/{{ folder }}
         state: directory
 
-    - name: Deleting all in yura
-      shell: rm /var/www/html/yura/*
+    - name: Deleting all in {{ folder }}
+      shell: rm /var/www/html/{{ folder }}/*
 
     - name: Copying files
-      shell: cp /var/www/html/My_web_site-main/* /var/www/html/yura/
+      shell: cp /var/www/html/My_web_site-main/* /var/www/html/{{ folder }}/
 
     - name: Executing a2ensite 1
-      shell: a2ensite yura.conf
+      shell: a2ensite {{ folder }}.conf
 
     - name: Executing a2ensite 2
-      shell: a2ensite yura_ssl.conf
+      shell: a2ensite {{ folder }}_ssl.conf
 
     - name: Deleting My_web_site-main
       file:

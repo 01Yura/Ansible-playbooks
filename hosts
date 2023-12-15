@@ -4,3 +4,6 @@ my_server_ubuntu ansible_host=194.87.199.75
 #my_server_amazon ansible_host=3.133.13.27 
 #target3 ansible_host=192.168.0.247 ansible_user=root ansible_password=toor
 #my_server ansible_host=18.219.44.49 ansible_user=root
+
+[server:vars]
+folder=yura
