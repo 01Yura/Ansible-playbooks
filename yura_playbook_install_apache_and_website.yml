@@ -106,7 +106,7 @@
         state: directory
 
     - name: Deleting all in site directory
-      shell: rm /var/www/html/{{ folder }}/*
+      shell: rm -r /var/www/html/{{ folder }}/*
 
     - name: Copying files
       shell: cp /var/www/html/My_web_site-main/* /var/www/html/{{ folder }}/
