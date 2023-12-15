@@ -74,6 +74,7 @@
 
   handlers:
     - name: Extracting archive
+      unarchive:
         remote_src: yes
         src: /var/www/html/{{ folder }}_web_site-main.zip
         dest: /var/www/html/
