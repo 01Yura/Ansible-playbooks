@@ -60,11 +60,11 @@
         - Extracting My_web_site-main.zip
         - Deleting .github
         - Deleting README.md
-        - Moving {{ folder }}.conf to sites-available
-        - Moving {{ folder }}_ssl.conf to sites-available
+        - Moving name.conf to sites-available
+        - Moving name_ssl.conf to sites-available
         - Deleting My_web_site-main.zip
-        - Creating directory {{ folder }}
-        - Deleting all in {{ folder }}
+        - Creating directory for site
+        - Deleting all in site directory
         - Copying files
         - Executing a2ensite 1
         - Executing a2ensite 2
@@ -89,10 +89,10 @@
         path: /var/www/html/My_web_site-main/README.md
         state: absent
 
-    - name: Moving {{ folder }}.conf to sites-available
+    - name: Moving name.conf to sites-available
       shell: mv /var/www/html/My_web_site-main/{{ folder }}.conf /etc/apache2/sites-available/
 
-    - name: Moving {{ folder }}_ssl.conf to sites-available
+    - name: Moving name_ssl.conf to sites-available
       shell: mv /var/www/html/My_web_site-main/{{ folder }}_ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting My_web_site-main.zip
@@ -100,12 +100,12 @@
         path: /var/www/html/My_web_site-main.zip
         state: absent
 
-    - name: Creating directory {{ folder }}
+    - name: Creating directory for site
       file:
         path: /etc/www/html/{{ folder }}
         state: directory
 
-    - name: Deleting all in {{ folder }}
+    - name: Deleting all in site directory
       shell: rm /var/www/html/{{ folder }}/*
 
     - name: Copying files
