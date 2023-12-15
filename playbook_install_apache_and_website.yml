@@ -57,12 +57,12 @@
         url: https://github.com/01Yura/{{ folder }}_web_site/archive/refs/heads/main.zip
         dest: /var/www/html/
       notify:
-        - Extracting My_web_site-main.zip
+        - Extracting archive
         - Deleting .github
         - Deleting README.md
         - Moving name.conf to sites-available
         - Moving name_ssl.conf to sites-available
-        - Deleting My_web_site-main.zip
+        - Deleting archive
         - Creating directory for site
         - Deleting all in site directory
         - Copying files
