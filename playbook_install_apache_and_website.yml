@@ -73,31 +73,30 @@
         - Restart Apache Debian
 
   handlers:
-    - name: Extracting My_web_site-main.zip
-      unarchive:
+    - name: Extracting archive
         remote_src: yes
-        src: /var/www/html/My_web_site-main.zip
+        src: /var/www/html/{{ folder }}_web_site-main.zip
         dest: /var/www/html/
 
     - name: Deleting .github
       file:
-        path: /var/www/html/My_web_site-main/.github
+        path: /var/www/html/{{ folder }}_web_site-main/.github
         state: absent
 
     - name: Deleting README.md
       file:
-        path: /var/www/html/My_web_site-main/README.md
+        path: /var/www/html/{{ folder }}_web_site-main/README.md
         state: absent
 
     - name: Moving name.conf to sites-available
-      shell: mv /var/www/html/My_web_site-main/{{ folder }}.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}.conf /etc/apache2/sites-available/
 
     - name: Moving name_ssl.conf to sites-available
-      shell: mv /var/www/html/My_web_site-main/{{ folder }}_ssl.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}_ssl.conf /etc/apache2/sites-available/
 
-    - name: Deleting My_web_site-main.zip
+    - name: Deleting archive
       file:
-        path: /var/www/html/My_web_site-main.zip
+        path: /var/www/html/{{ folder }}_web_site-main.zip
         state: absent
 
     - name: Creating directory for site
