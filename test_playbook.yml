@@ -47,7 +47,7 @@
       lineinfile:
         dest: /etc/apache2/sites-available/{{ folder }}.conf
         regexp: '  #ServerName www.example.com'
-        insertafter: '  #ServerName www.example.com'
+        insertafter: '^'
         line: '  ServerName {{ folder }}.it-primyshev.site'
         state: present
 
