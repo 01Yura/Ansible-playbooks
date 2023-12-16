@@ -102,7 +102,7 @@
 
     - name: Creating directory for site
       ansible.builtin.file:
-        path: /etc/www/html/{{ folder }}
+        path: /var/www/html/{{ folder }}
         state: directory
 
     #- name: Deleting all in site directory
