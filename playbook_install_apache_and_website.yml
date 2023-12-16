@@ -101,7 +101,7 @@
         state: absent
 
     - name: Creating directory for site
-      file:
+      ansible.builtin.file:
         path: /etc/www/html/{{ folder }}
         state: directory
 
