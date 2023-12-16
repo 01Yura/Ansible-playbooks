@@ -68,7 +68,7 @@
         - Copying files
         - Executing a2ensite 1
         - Executing a2ensite 2
-        - Deleting My_web_site-main
+        - Deleting web_site-main
         - Restart Apache Centos
         - Restart Apache Debian
 
@@ -90,10 +90,10 @@
         state: absent
 
     - name: Moving name.conf to sites-available
-      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}/{{ folder }}.conf /etc/apache2/sites-available/
 
     - name: Moving name_ssl.conf to sites-available
-      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}_ssl.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}/{{ folder }}_ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting archive
       file:
@@ -110,7 +110,7 @@
       ignore_errors: yes
 
     - name: Copying files
-      shell: cp /var/www/html/My_web_site-main/* /var/www/html/{{ folder }}/
+      shell: cp /var/www/html/{{ folder }}_web_site-main/{{ folder }}/* /var/www/html/{{ folder }}/
 
     - name: Executing a2ensite 1
       shell: a2ensite {{ folder }}.conf
@@ -118,9 +118,9 @@
     - name: Executing a2ensite 2
       shell: a2ensite {{ folder }}_ssl.conf
 
-    - name: Deleting My_web_site-main
+    - name: Deleting web_site-main
       file:
-        path: /var/www/html/My_web_site-main
+        path: /var/www/html/{{ folder }}_web_site-main
         state: absent
 
     - name: Restart Apache Centos
