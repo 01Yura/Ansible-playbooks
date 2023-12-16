@@ -8,8 +8,6 @@
       debug:
         var: ansible_os_family
 
-    - block: #====== Block for RedHat ======
-
     - block: #====== Block for Debian ======
         - name: Updating repos for Ubuntu
           apt:
