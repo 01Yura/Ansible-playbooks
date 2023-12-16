@@ -105,9 +105,9 @@
         path: /etc/www/html/{{ folder }}
         state: directory
 
-    - name: Deleting all in site directory
-      shell: rm /var/www/html/{{ folder }}/*
-      ignore_errors: yes
+    #- name: Deleting all in site directory
+    #  shell: rm /var/www/html/{{ folder }}/*
+    #  ignore_errors: yes
 
     - name: Copying files
       shell: cp /var/www/html/{{ folder }}_web_site-main/{{ folder }}/* /var/www/html/{{ folder }}/
