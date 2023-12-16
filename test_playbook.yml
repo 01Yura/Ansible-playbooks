@@ -47,17 +47,18 @@
       lineinfile:
         dest: /etc/apache2/sites-available/{{ folder }}.conf
         regexp: '^'
-        insertafter: ' #ServerName www.example.com'
-        line: ' ServerName {{ folder }}.it-primyshev.site'
+        insertafter: '  #ServerName www.example.com'
+        line: '  ServerName {{ folder }}.it-primyshev.site'
         state: present
 
     - name: Change strings into conf_file
       lineinfile:
         path: "/etc/apache2/sites-available/{{ folder }}.conf"
-        line: "DocumentRoot /var/www/html/{{ folder }}"
         regexp: "DocumentRoot /var/www/html"
+        line: "DocumentRoot /var/www/html/{{ folder }}"
         
-    - name: Change strings into conf_file
+        
+    - name: Change strings into conf_file TEMPLATE
       lineinfile:
         line: "{{ item.line }}"
         regexp: "{{ item.regexp }}"
