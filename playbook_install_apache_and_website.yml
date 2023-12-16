@@ -64,7 +64,7 @@
         - Moving name_ssl.conf to sites-available
         - Deleting archive
         - Creating directory for site
-        - Deleting all in site directory
+        #- Deleting all in site directory
         - Copying files
         - Executing a2ensite 1
         - Executing a2ensite 2
