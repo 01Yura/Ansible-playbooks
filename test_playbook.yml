@@ -46,7 +46,7 @@
     - name: Add a single line in conf_file 1
       lineinfile:
         dest: /etc/apache2/sites-available/{{ folder }}.conf
-        regexp: '^'
+        regexp: '  #ServerName www.example.com'
         insertafter: '  #ServerName www.example.com'
         line: '  ServerName {{ folder }}.it-primyshev.site'
         state: present
@@ -55,7 +55,7 @@
       lineinfile:
         path: "/etc/apache2/sites-available/{{ folder }}.conf"
         regexp: "DocumentRoot /var/www/html"
-        line: "DocumentRoot /var/www/html/{{ folder }}"
+        line: "  DocumentRoot /var/www/html/{{ folder }}"
         
         
     - name: Change strings into conf_file TEMPLATE
