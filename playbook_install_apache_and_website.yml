@@ -90,10 +90,10 @@
         state: absent
 
     - name: Moving name.conf to sites-available
-      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}/{{ folder }}.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}/configs/{{ folder }}.conf /etc/apache2/sites-available/
 
     - name: Moving name_ssl.conf to sites-available
-      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}/{{ folder }}_ssl.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/{{ folder }}_web_site-main/{{ folder }}/configs/{{{ folder }}_ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting archive
       file:
