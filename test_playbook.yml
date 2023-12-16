@@ -43,19 +43,19 @@
         dest: /etc/apache2/sites-available/{{ folder }}_ssl.conf
         remote_src: true
 
-    - name: add a single line in conf_file 1
+    - name: Add a single line in conf_file 1
       lineinfile:
         dest: /etc/apache2/sites-available/{{ folder }}.conf
         regexp: '^'
-        insertafter: '#ServerName www.example.com'
-        line: 'ServerName {{ folder }}.it-primyshev.site'
+        insertafter: ' #ServerName www.example.com'
+        line: ' ServerName {{ folder }}.it-primyshev.site'
         state: present
 
     - name: Change strings into conf_file
       lineinfile:
         path: "/etc/apache2/sites-available/{{ folder }}.conf"
-        line: "DocumentRoot /var/www/html"
-        regexp: "DocumentRoot /var/www/html/{{ folder }}"
+        line: "DocumentRoot /var/www/html/{{ folder }}"
+        regexp: "DocumentRoot /var/www/html"
         
     - name: Change strings into conf_file
       lineinfile:
