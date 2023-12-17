@@ -149,7 +149,6 @@
       shell: a2ensite {{ folder }}_ssl.conf
 
     - name: Restart Apache Debian
-      ansible.builtin.service:
+      service:
         name: apache2
         state: restarted
-      when: ansible_os_family=="Debian"
