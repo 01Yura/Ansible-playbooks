@@ -1,0 +1,155 @@
+---
+- name: Install Apache Web Server
+  hosts: [server]
+  become: yes
+
+  tasks:
+    - name: Updating repos for Ubuntu
+      apt:
+        update_cache: yes
+
+    - name: Install Apache for Ubuntu
+      apt:
+        name: apache2
+        tate: latest
+
+    - name: Start Apache and enable autoboot (Ubuntu)
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Installing Unzip for Ubuntu
+      apt:
+        name: unzip
+        state: latest
+
+    - name: Downloading my website from github.com
+      get_url:
+        url: https://github.com/01Yura/{{ folder }}_web_site/archive/refs/heads/main.zip
+        dest: /var/www/html/
+
+    - name: Extracting archive
+      unarchive:
+        remote_src: yes
+        src: /var/www/html/{{ folder }}_web_site-main.zip
+        dest: /var/www/html/
+
+    - name: Deleting .github
+      file:
+        path: /var/www/html/{{ folder }}_web_site-main/.github
+        state: absent
+
+    - name: Deleting README.md
+      file:
+        path: /var/www/html/{{ folder }}_web_site-main/README.md
+        state: absent
+
+    - name: Deleting archive
+      file:
+        path: /var/www/html/{{ folder }}_web_site-main.zip
+        state: absent
+
+    - name: Creating directory for site
+      ansible.builtin.file:
+        path: /var/www/html/{{ folder }}
+        state: directory
+
+    - name: Deleting all in site directory
+      shell: rm /var/www/html/{{ folder }}/*
+      ignore_errors: yes
+
+    - name: Copying files
+      shell: cp /var/www/html/{{ folder }}_web_site-main/{{ folder }}/* /var/www/html/{{ folder }}
+
+    - name: Deleting web_site-main
+      file:
+        path: /var/www/html/{{ folder }}_web_site-main
+        state: absent
+
+    - name: Copy conf_file on remote hosts
+      copy:
+        src: /etc/apache2/sites-available/000-default.conf
+        dest: /etc/apache2/sites-available/{{ folder }}.conf
+        remote_src: true
+      notify:
+        - Find and Replace string into conf_file
+        - Change string into conf_file
+        - Add strings for ssl-redirect before </VirtualHost> into conf_file
+        - Executing a2ensite 1
+        - Restart Apache Debian
+
+    - name: Copy ssl_conf_file on remote hosts
+      copy:
+        src: /etc/apache2/sites-available/default-ssl.conf
+        dest: /etc/apache2/sites-available/{{ folder }}_ssl.conf
+        remote_src: true
+      notify:
+        - Add string after "ServerAdmin webmaster@localhost" into ssl_conf_file
+        - Change string into ssl_conf_file
+        - Add strings for ssl-redirect before </VirtualHost> into ssl_conf_file
+        - Find and Replace 1 string into ssl_conf_file
+        - Find and Replace 2 string into ssl_conf_file
+        - Executing a2ensite 2
+        - Restart Apache Debian
+
+  handlers:
+    - name: Find and Replace string into conf_file
+      ansible.builtin.lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}.conf
+        search_string: "#ServerName www.example.com"
+        line: "  ServerName {{ folder }}.it-primyshev.site"
+
+    - name: Change string into conf_file
+      lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}.conf
+        regexp: "DocumentRoot /var/www/html"
+        line: "  DocumentRoot /var/www/html/{{ folder }}"
+
+    - name: Add strings for ssl-redirect before </VirtualHost> into conf_file
+      lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}.conf
+        line: "  RewriteEngine on\n  RewriteCond %{SERVER_NAME} ={{ folder }}.it-primyshev.site\n  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]"
+        insertbefore: "</VirtualHost>"
+
+    - name: Add string after "ServerAdmin webmaster@localhost" into ssl_conf_file
+      lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}_ssl.conf
+        line: "    ServerName {{ folder }}.it-primyshev.site"
+        insertafter: "ServerAdmin webmaster@localhost"
+
+    - name: Change string into ssl_conf_file
+      lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}_ssl.conf
+        regexp: "DocumentRoot /var/www/html"
+        line: "    DocumentRoot /var/www/html/{{ folder }}"
+
+    - name: Add strings for ssl-redirect before </VirtualHost> into ssl_conf_file
+      lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}_ssl.conf
+        line: "    Include /etc/letsencrypt/options-ssl-apache.conf"
+        insertbefore: "</VirtualHost>"
+
+    - name: Find and Replace 1 string into ssl_conf_file
+      ansible.builtin.lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}_ssl.conf
+        search_string: "SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem"
+        line: "    SSLCertificateFile      /etc/letsencrypt/live/it-primyshev.site-0001/fullchain.pem"
+
+    - name: Find and Replace 2 string into ssl_conf_file
+      ansible.builtin.lineinfile:
+        path: /etc/apache2/sites-available/{{ folder }}_ssl.conf
+        search_string: "SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key"
+        line: "    SSLCertificateKeyFile   /etc/letsencrypt/live/it-primyshev.site-0001/privkey.pem"
+
+    - name: Executing a2ensite 1
+      shell: a2ensite {{ folder }}.conf
+
+    - name: Executing a2ensite 2
+      shell: a2ensite {{ folder }}_ssl.conf
+
+    - name: Restart Apache Debian
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
+      when: ansible_os_family=="Debian"
