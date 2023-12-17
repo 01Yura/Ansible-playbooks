@@ -11,7 +11,7 @@
     - name: Install Apache for Ubuntu
       apt:
         name: apache2
-        tate: latest
+        state: latest
 
     - name: Start Apache and enable autoboot (Ubuntu)
       service:
