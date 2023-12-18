@@ -134,13 +134,13 @@
       ansible.builtin.lineinfile:
         path: /etc/apache2/sites-available/{{ folder }}-le-ssl.conf
         search_string: "SSLCertificateFile	/etc/ssl/certs/ssl-cert-snakeoil.pem"
-        line: "    SSLCertificateFile      /etc/letsencrypt/live/etual.it-primyshev.site-0001/fullchain.pem"
+        line: "    SSLCertificateFile      /etc/letsencrypt/live/etual.it-primyshev.site/fullchain.pem"
 
     - name: Find and Replace 2 string into ssl_conf_file
       ansible.builtin.lineinfile:
         path: /etc/apache2/sites-available/{{ folder }}-le-ssl.conf
         search_string: "SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key"
-        line: "    SSLCertificateKeyFile   /etc/letsencrypt/live/etual.it-primyshev.site-0001/privkey.pem"
+        line: "    SSLCertificateKeyFile   /etc/letsencrypt/live/etual.it-primyshev.site/privkey.pem"
 
     - name: Executing a2ensite 1
       shell: a2ensite {{ folder }}.conf
