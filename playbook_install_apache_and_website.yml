@@ -93,7 +93,7 @@
       shell: mv /var/www/html/{{ folder }}_web_site-main/configs/{{ folder }}.conf /etc/apache2/sites-available/
 
     - name: Moving name_ssl.conf to sites-available
-      shell: mv /var/www/html/{{ folder }}_web_site-main/configs/{{ folder }}_ssl.conf /etc/apache2/sites-available/
+      shell: mv /var/www/html/{{ folder }}_web_site-main/configs/{{ folder }}-le-ssl.conf /etc/apache2/sites-available/
 
     - name: Deleting archive
       file:
@@ -116,7 +116,7 @@
       shell: a2ensite {{ folder }}.conf
 
     - name: Executing a2ensite 2
-      shell: a2ensite {{ folder }}_ssl.conf
+      shell: a2ensite {{ folder }}-le-ssl.conf
 
     - name: Deleting web_site-main
       file:
