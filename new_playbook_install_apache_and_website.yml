@@ -35,16 +35,6 @@
         src: /var/www/html/{{ folder }}_web_site-main.zip
         dest: /var/www/html/
 
-    #- name: Deleting .github
-    #  file:
-    #    path: /var/www/html/{{ folder }}_web_site-main/.github
-    #    state: absent
-
-    #- name: Deleting README.md
-    #  file:
-    #    path: /var/www/html/{{ folder }}_web_site-main/README.md
-    #    state: absent
-
     - name: Deleting archive
       file:
         path: /var/www/html/{{ folder }}_web_site-main.zip
