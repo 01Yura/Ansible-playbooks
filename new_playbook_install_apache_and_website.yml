@@ -109,7 +109,7 @@
     - name: Add strings for ssl-redirect before </VirtualHost> into conf_file
       lineinfile:
         path: /etc/apache2/sites-available/{{ folder }}.conf
-        line: "  RewriteEngine on\n  RewriteCond %{SERVER_NAME} ={{ folder }}.it-primyshev.site\n  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]"
+        line: "RewriteEngine on\nRewriteCond %{SERVER_NAME} ={{ folder }}.it-primyshev.site\nRewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]"
         insertbefore: "</VirtualHost>"
 
     - name: Add string after "ServerAdmin webmaster@localhost" into ssl_conf_file
