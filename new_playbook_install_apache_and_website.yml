@@ -69,19 +69,19 @@
         - Executing a2ensite 1
         - Restart Apache Debian
 
-    - name: Copy ssl_conf_file on remote hosts
-      copy:
-        src: /etc/apache2/sites-available/default-ssl.conf
-        dest: /etc/apache2/sites-available/{{ folder }}-le-ssl.conf
-        remote_src: true
-      notify:
-        - Add string after "ServerAdmin webmaster@localhost" into ssl_conf_file
-        - Change string into ssl_conf_file
-        - Add strings for ssl-redirect before </VirtualHost> into ssl_conf_file
-        - Find and Replace 1 string into ssl_conf_file
-        - Find and Replace 2 string into ssl_conf_file
-        - Executing a2ensite 2
-        - Restart Apache Debian
+#    - name: Copy ssl_conf_file on remote hosts
+#      copy:
+#        src: /etc/apache2/sites-available/default-ssl.conf
+#        dest: /etc/apache2/sites-available/{{ folder }}-le-ssl.conf
+#        remote_src: true
+#      notify:
+#        - Add string after "ServerAdmin webmaster@localhost" into ssl_conf_file
+#       - Change string into ssl_conf_file
+#        - Add strings for ssl-redirect before </VirtualHost> into ssl_conf_file
+#        - Find and Replace 1 string into ssl_conf_file
+#        - Find and Replace 2 string into ssl_conf_file
+#        - Executing a2ensite 2
+#       - Restart Apache Debian
 
   handlers:
     - name: Find and Replace string into conf_file
