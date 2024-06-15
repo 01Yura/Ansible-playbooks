@@ -65,7 +65,7 @@
       notify:
         - Find and Replace string into conf_file
         - Change string into conf_file
-        - Add strings for ssl-redirect before </VirtualHost> into conf_file
+#        - Add strings for ssl-redirect before </VirtualHost> into conf_file
         - Executing a2ensite 1
         - Restart Apache Debian
 
