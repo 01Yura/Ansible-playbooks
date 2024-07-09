@@ -26,17 +26,17 @@
 
     - name: Подключение к MySQL с использованием root и пароля
       shell: |
-        echo "CREATE USER 'wp_user'@'%' IDENTIFIED BY 'Fdnj19vj,bkm';" | mysql -u root -pFdnj19vj,bkm
-        echo "GRANT ALL PRIVILEGES ON *.* TO 'wp_user'@'%' WITH GRANT OPTION;" | mysql -u root -pFdnj19vj,bkm
-        echo "CREATE DATABASE IF NOT EXISTS wordpress;" | mysql -u root -pFdnj19vj,bkm
-        echo "FLUSH PRIVILEGES;" | mysql -u root -pFdnj19vj,bkm
+        echo "CREATE USER 'wp_user'@'%' IDENTIFIED BY 'toor';" | mysql -u root -ptoor
+        echo "GRANT ALL PRIVILEGES ON *.* TO 'wp_user'@'%' WITH GRANT OPTION;" | mysql -u root -ptoor
+        echo "CREATE DATABASE IF NOT EXISTS wordpress;" | mysql -u root -ptoor
+        echo "FLUSH PRIVILEGES;" | mysql -u root -ptoor
       args:
         executable: /bin/bash
 
     - name: Запрет удаленного подключения для root
       shell: |
-        echo "UPDATE mysql.user SET Host='localhost' WHERE User='root' AND Host='%';" | mysql -u root -pFdnj19vj,bkm
-        echo "FLUSH PRIVILEGES;" | mysql -u root -pFdnj19vj,bkm
+        echo "UPDATE mysql.user SET Host='localhost' WHERE User='root' AND Host='%';" | mysql -u root -ptoor
+        echo "FLUSH PRIVILEGES;" | mysql -u root -ptoor
       args:
         executable: /bin/bash
 
