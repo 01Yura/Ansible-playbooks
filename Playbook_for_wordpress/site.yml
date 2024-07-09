@@ -1,0 +1,131 @@
+---
+- hosts: webservers
+  become: yes
+
+  tasks:
+    - name: Обновление списка пакетов и установка зависимостей
+      apt:
+        update_cache: yes
+        name:
+          - nginx
+          - mysql-server
+          - php-fpm
+          - php-mysql
+          - curl
+          - python3-pymysql
+        state: present
+
+    - name: Запуск и включение Nginx и MySQL
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items:
+        - nginx
+        - mysql
+
+    - name: Подключение к MySQL с использованием root и пароля
+      shell: |
+        echo "CREATE USER 'wp_user'@'%' IDENTIFIED BY 'Fdnj19vj,bkm';" | mysql -u root -pFdnj19vj,bkm
+        echo "GRANT ALL PRIVILEGES ON *.* TO 'wp_user'@'%' WITH GRANT OPTION;" | mysql -u root -pFdnj19vj,bkm
+        echo "CREATE DATABASE IF NOT EXISTS wordpress;" | mysql -u root -pFdnj19vj,bkm
+        echo "FLUSH PRIVILEGES;" | mysql -u root -pFdnj19vj,bkm
+      args:
+        executable: /bin/bash
+
+    - name: Запрет удаленного подключения для root
+      shell: |
+        echo "UPDATE mysql.user SET Host='localhost' WHERE User='root' AND Host='%';" | mysql -u root -pFdnj19vj,bkm
+        echo "FLUSH PRIVILEGES;" | mysql -u root -pFdnj19vj,bkm
+      args:
+        executable: /bin/bash
+
+    - name: Создание директории для WordPress
+      file:
+        path: /var/www/it-website.ru
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Скачивание WordPress
+      get_url:
+        url: https://wordpress.org/latest.tar.gz
+        dest: /tmp/latest.tar.gz
+
+    - name: Распаковка WordPress
+      unarchive:
+        src: /tmp/latest.tar.gz
+        dest: /var/www/it-website.ru
+        remote_src: yes
+
+    - name: Установка правильных разрешений
+      file:
+        path: /var/www/it-website.ru/wordpress
+        owner: www-data
+        group: www-data
+        recurse: yes
+
+    - name: Настройка конфигурации Nginx для WordPress
+      copy:
+        content: |
+          server {
+              listen 80;
+              server_name it-website.ru;
+              root /var/www/it-website.ru/wordpress;
+
+              index index.php index.html index.htm;
+
+              location / {
+                  try_files $uri $uri/ /index.php?$args;
+              }
+
+              location ~ \.php$ {
+                  include snippets/fastcgi-php.conf;
+                  fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+                  client_max_body_size 100M;
+              }
+
+              location ~ /\.ht {
+                  deny all;
+              }
+          }
+        dest: /etc/nginx/sites-available/wordpress
+
+    - name: Удаление стандартного сайта Nginx
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Создание символической ссылки на конфигурацию Nginx
+      file:
+        src: /etc/nginx/sites-available/wordpress
+        dest: /etc/nginx/sites-enabled/wordpress
+        state: link
+
+    - name: Перезагрузка Nginx
+      systemd:
+        name: nginx
+        state: restarted
+
+    - name: Настройка директив PHP для увеличения максимального размера загружаемого файла
+      lineinfile:
+        path: /etc/php/8.1/fpm/php.ini
+        regexp: '^upload_max_filesize ='
+        line: 'upload_max_filesize = 100M'
+
+    - name: Настройка директив PHP для увеличения максимального размера POST данных
+      lineinfile:
+        path: /etc/php/8.1/fpm/php.ini
+        regexp: '^post_max_size ='
+        line: 'post_max_size = 100M'
+
+    - name: Перезапуск PHP-FPM
+      systemd:
+        name: php8.1-fpm
+        state: restarted
+
+    - name: Настройка WordPress
+      template:
+        src: wp-config.php.j2
+        dest: /var/www/it-website.ru/wordpress/wp-config.php
