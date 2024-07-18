@@ -1,0 +1,212 @@
+---
+- name: Install Synapse on server.it-website.ru
+  hosts: server
+  become: yes
+  vars:
+    synapse_server_name: "server.it-website.ru"
+    synapse_data_dir: "/root/synapse/data"
+    nginx_conf_dir: "/root/synapse/nginx"
+    certbot_email: "p020885@yandex.ru"
+    admin_user: "admin"
+    admin_password: "my_secret_password"
+  tasks:
+    - name: Update and install Docker and Docker Compose
+      apt:
+        update_cache: yes
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create working directory for Synapse
+      file:
+        path: "{{ synapse_data_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Generate Synapse configuration
+      command: >
+        docker run -it --rm
+        -v "{{ synapse_data_dir }}:/data"
+        -e SYNAPSE_SERVER_NAME={{ synapse_server_name }}
+        -e SYNAPSE_REPORT_STATS=yes
+        matrixdotorg/synapse:latest generate
+      args:
+        chdir: /root/synapse
+
+    - name: Modify server_name in homeserver.yaml
+      lineinfile:
+        path: "{{ synapse_data_dir }}/homeserver.yaml"
+        regexp: "^server_name:"
+        line: "server_name: {{ synapse_server_name }}"
+        state: present
+
+    - name: Remove tls line in homeserver.yaml
+      lineinfile:
+        path: "{{ synapse_data_dir }}/homeserver.yaml"
+        regexp: "^tls:"
+        line: ""
+        state: absent
+
+    - name: Add enable_registration setting to homeserver.yaml
+      lineinfile:
+        path: "{{ synapse_data_dir }}/homeserver.yaml"
+        line: "enable_registration: true"
+        state: present
+
+    - name: Add enable_registration_without_verification setting to homeserver.yaml
+      lineinfile:
+        path: "{{ synapse_data_dir }}/homeserver.yaml"
+        line: "enable_registration_without_verification: true"
+        state: present
+
+    - name: Add admin_users setting to homeserver.yaml
+      blockinfile:
+        path: "{{ synapse_data_dir }}/homeserver.yaml"
+        block: |
+          admin_users:
+            - "@{{ admin_user }}:http://localhost:8008"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+
+    - name: Extract registration_shared_secret from homeserver.yaml
+      command: grep 'registration_shared_secret' {{ synapse_data_dir }}/homeserver.yaml
+      register: registration_shared_secret_line
+
+    - name: Set registration_shared_secret fact
+      set_fact:
+        registration_shared_secret: "{{ registration_shared_secret_line.stdout.split(': ')[1] | trim }}"
+
+    - name: Create docker-compose.yml for Synapse and Nginx
+      copy:
+        dest: /root/synapse/docker-compose.yml
+        content: |
+          version: '3'
+          services:
+            synapse:
+              image: matrixdotorg/synapse:latest
+              container_name: synapse
+              volumes:
+                - ./data:/data
+              environment:
+                - SYNAPSE_SERVER_NAME={{ synapse_server_name }}
+                - SYNAPSE_REPORT_STATS=yes
+              expose:
+                - "8008"
+
+            synapse-admin:
+              image: awesometechnologies/synapse-admin:latest
+              container_name: synapse-admin
+              environment:
+                - SYNAPSE_ADMIN_API_URL=http://synapse:8008/_synapse/admin/v1
+              expose:
+                - "80"
+
+            nginx:
+              image: nginx:latest
+              container_name: synapse-nginx
+              volumes:
+                - ./nginx:/etc/nginx/conf.d
+                - /etc/letsencrypt:/etc/letsencrypt
+              ports:
+                - "80:80"
+                - "443:443"
+              depends_on:
+                - synapse
+                - synapse-admin
+          networks:
+            default:
+              external:
+                name: nginx-net
+
+    - name: Create Nginx configuration directory
+      file:
+        path: "{{ nginx_conf_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create Nginx configuration file
+      copy:
+        dest: "{{ nginx_conf_dir }}/synapse.conf"
+        content: |
+          server {
+              listen 80;
+              server_name {{ synapse_server_name }};
+
+              location / {
+                  return 301 https://$host$request_uri;
+              }
+          }
+
+          server {
+              listen 443 ssl;
+              server_name {{ synapse_server_name }};
+
+              ssl_certificate /etc/letsencrypt/live/{{ synapse_server_name }}/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/{{ synapse_server_name }}/privkey.pem;
+
+              location / {
+                  proxy_pass http://synapse:8008;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+
+              location /admin/ {
+                  proxy_pass http://synapse-admin:80/;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+
+    - name: Install Certbot
+      apt:
+        name: certbot
+        state: present
+
+    - name: Obtain SSL certificates
+      command: certbot certonly --standalone -d {{ synapse_server_name }} --email {{ certbot_email }} --agree-tos --non-interactive
+
+    - name: Create Docker network nginx-net if not exists
+      command: docker network create nginx-net
+      register: network_create
+      failed_when: network_create.rc != 0 and "already exists" not in network_create.stderr
+
+    - name: Start Docker Compose
+      command: docker-compose up -d
+      args:
+        chdir: /root/synapse
+
+    - name: Allow ports 80 and 443 through UFW
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - "80"
+        - "443"
+      ignore_errors: yes
+
+    - name: Wait for Synapse container to be up
+      wait_for:
+        host: localhost
+        port: 8008
+        delay: 5
+        timeout: 15
+        state: started
+
+    - name: Register admin user
+      command: docker exec -it synapse register_new_matrix_user -u {{ admin_user }} -p {{ admin_password }} -a -k "{{ registration_shared_secret }}" http://localhost:8008
+
+    - name: Restart Synapse container
+      command: docker-compose restart synapse
+      args:
+        chdir: /root/synapse
