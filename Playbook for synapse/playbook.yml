@@ -54,10 +54,10 @@
         line: ""
         state: absent
 
-    - name: Add enable_registration setting to homeserver.yaml
+    - name: Add disable_registration setting to homeserver.yaml
       lineinfile:
         path: "{{ synapse_data_dir }}/homeserver.yaml"
-        line: "enable_registration: true"
+        line: "enable_registration: false"
         state: present
 
     - name: Add enable_registration_without_verification setting to homeserver.yaml
@@ -137,6 +137,7 @@
           server {
               listen 80;
               server_name {{ synapse_server_name }};
+              client_max_body_size 100M;
 
               location / {
                   return 301 https://$host$request_uri;
@@ -146,6 +147,7 @@
           server {
               listen 443 ssl;
               server_name {{ synapse_server_name }};
+              client_max_body_size 100M;
 
               ssl_certificate /etc/letsencrypt/live/{{ synapse_server_name }}/fullchain.pem;
               ssl_certificate_key /etc/letsencrypt/live/{{ synapse_server_name }}/privkey.pem;
@@ -194,14 +196,6 @@
         - "80"
         - "443"
       ignore_errors: yes
-
-    - name: Wait for Synapse container to be up
-      wait_for:
-        host: localhost
-        port: 8008
-        delay: 5
-        timeout: 15
-        state: started
 
     - name: Register admin user
       command: docker exec -it synapse register_new_matrix_user -u {{ admin_user }} -p {{ admin_password }} -a -k "{{ registration_shared_secret }}" http://localhost:8008
