@@ -204,3 +204,4 @@
       command: docker-compose restart synapse
       args:
         chdir: /root/synapse
+        
